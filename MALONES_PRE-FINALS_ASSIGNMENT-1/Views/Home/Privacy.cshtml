@@ -1,6 +1,26 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
-}
-<h1>@ViewData["Title"]</h1>
-
-<p>Use this page to detail your site's privacy policy.</p>
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"] - Home</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <!-- Other head content -->
+</head>
+<body>
+    <header>
+        <!-- Navigation links -->
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Home/PrivacyPolicy">Privacy Policy</a></li>
+                <!-- Other navigation links -->
+            </ul>
+        </nav>
+    </header>
+    <main role="main" class="container">
+        @RenderBody()
+    </main>
+    <footer>
+        <!-- Footer content -->
+    </footer>
+</body>
+</html>
