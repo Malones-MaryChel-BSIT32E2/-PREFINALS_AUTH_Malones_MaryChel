@@ -1,4 +1,4 @@
-namespace MALONES_PRE_FINALS_ASSIGNMENT_1.Models
+namespace PREFINALS_AUTH_PULGAN_MYRAZA_RIANN.Models
 {
     public class ErrorViewModel
     {

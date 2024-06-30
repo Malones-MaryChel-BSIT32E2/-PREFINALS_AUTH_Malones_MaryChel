@@ -1,32 +1,57 @@
-﻿using MALONES_PRE_FINALS_ASSIGNMENT_1.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using AuthServer.Core;
 
-namespace MALONES_PRE_FINALS_ASSIGNMENT_1.Controllers
+namespace AuthServer.Controllers
 {
-    public class HomeController : Controller
+    [ApiController]
+    [Route("[controller]")]
+    public class AuthController : ControllerBase
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IUserService _userService;
+        private readonly IAuthService _authService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public AuthController(IUserService userService, IAuthService authService)
         {
-            _logger = logger;
+            _userService = userService;
+            _authService = authService;
         }
 
-        public IActionResult Index()
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            return View();
+            var user = await _userService.Register(model.Username, model.Password);
+            if (user == null)
+            {
+                return BadRequest("User already exists");
+            }
+
+            return Ok(new { Message = "Registration successful" });
         }
 
-        public IActionResult Privacy()
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            return View();
-        }
+            var user = await _userService.Authenticate(model.Username, model.Password);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var token = _authService.GenerateJwtToken(user);
+            return Ok(new { Token = token });
         }
+    }
+
+    public class RegisterModel
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class LoginModel
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }
